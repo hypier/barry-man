@@ -1,6 +1,6 @@
 <template>
   <el-menu class="el-menu-vertical" @open="handleOpen" @close="handleClose"
-           :collapse="isCollapse" style="border-right: none;">
+           :collapse="this.collapse" style="border-right: none;">
     <MenuTree :menuData="this.menuData"></MenuTree>
   </el-menu>
 </template>
@@ -9,9 +9,9 @@
 import MenuTree from './MenuTree'
 
 export default {
+  props: ['collapse'],
   data() {
     return {
-      isCollapse: false,
       menuData: []
     }
   },
@@ -45,7 +45,18 @@ export default {
 <style type="text/css">
 
 .el-menu-vertical:not(.el-menu--collapse) {
-  width: 280px;
+  width: 200px;
 }
 
+.el-menu--collapse .el-submenu__title span {
+  height: 0;
+  width: 0;
+  overflow: hidden;
+  visibility: hidden;
+  display: inline-block;
+}
+
+.el-menu--collapse .el-submenu__icon-arrow {
+  display: none;
+}
 </style>

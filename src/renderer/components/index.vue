@@ -24,7 +24,7 @@
             <div class="line"></div>
           </el-col>
         </el-row>
-        <MenuBar></MenuBar>
+        <MenuBar :collapse="isCollapse"></MenuBar>
 
       </el-aside>
       <el-main>
@@ -79,6 +79,10 @@ html, body, #app, .el-container {
   background-color: #303133;
   color: #FFF;
   line-height: 60px;
+}
+
+.el-menu--collapse {
+  width: 53px;
 }
 
 .el-aside {
