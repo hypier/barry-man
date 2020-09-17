@@ -1,4 +1,4 @@
-# my-project
+# barry-man
 
 > An electron-vue project
 

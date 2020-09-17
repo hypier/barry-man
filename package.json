@@ -17,7 +17,7 @@
     "postinstall": ""
   },
   "build": {
-    "productName": "my-project",
+    "productName": "barry-man",
     "appId": "com.example.yourapp",
     "directories": {
       "output": "build"
