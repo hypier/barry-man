@@ -1,7 +1,7 @@
 <template>
-  <el-menu class="el-menu-vertical" @open="handleOpen" @close="handleClose"
+  <el-menu class="el-menu-vertical" @open="handleOpen" @close="handleClose" @select="handleSelect"
            :collapse="this.collapse" style="border-right: none;">
-    <MenuTree :menuData="this.menuData"></MenuTree>
+    <MenuTree :menuData="this.menuData" :menuInfo="this.menuInfo"></MenuTree>
   </el-menu>
 </template>
 
@@ -12,13 +12,17 @@ export default {
   props: ['collapse'],
   data() {
     return {
-      menuData: []
+      menuData: [],
+      menuInfo: {}
     }
   },
   created: function () {
     this.getMenu()
   },
   methods: {
+    handleSelect(key, keyPath) {
+      console.log(key, keyPath, event.target)
+    },
     handleOpen(key, keyPath) {
       event.target.parentElement.getElementsByClassName("el-icon-folder-add")[0]
           .setAttribute("class", "el-icon-folder-opened")
@@ -29,12 +33,17 @@ export default {
     },
     getMenu: function () {
       let fs = require('fs'),
+          Collection = require('postman-collection').Collection,
           path = require('path'),
           myCollection;
 
-      myCollection = JSON.parse(fs.readFileSync(
-          path.resolve(__dirname, '../../../docs/doc.postman_collection.json')).toString());
-      this.menuData = myCollection.item
+      myCollection = new Collection(JSON.parse(fs.readFileSync(
+          path.resolve(__dirname, '../../../docs/doc.postman_collection.json')).toString()));
+      let json = myCollection.toJSON()
+      console.log(json)
+
+      this.menuData = json.item
+      this.menuInfo = json.info
     }
   },
   components: {
