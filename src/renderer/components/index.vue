@@ -9,7 +9,7 @@
           <el-dropdown-item>删除</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-      <span>Wang Xiang Hu</span>
+      <span>Barry的异想世界</span>
     </el-header>
     <el-container>
       <el-aside width="auto">
@@ -28,14 +28,20 @@
 
       </el-aside>
       <el-main>
-        <el-table :data="tableData">
-          <el-table-column prop="date" label="日期" width="140">
-          </el-table-column>
-          <el-table-column prop="name" label="姓名" width="120">
-          </el-table-column>
-          <el-table-column prop="address" label="地址">
-          </el-table-column>
-        </el-table>
+        <el-tabs v-model="editableTabsValue" type="card" @tab-remove="removeTab" @tab-click="handleClick">
+          <el-tab-pane
+              v-for="(item, index) in editableTabs"
+              :key="item.name"
+              :label="item.title"
+              :name="item.name"
+              :closable="item.closable"
+          >
+            <component :is="item.content" v-if="item.content === 'MTable'"></component>
+            <div v-else>{{ item.content }}</div>
+          </el-tab-pane>
+          <el-tab-pane key="add" name="add" :closable="false" label="+"></el-tab-pane>
+        </el-tabs>
+
       </el-main>
 
     </el-container>
@@ -137,6 +143,7 @@ html, body, #app, .el-container {
 
 <script>
 import MenuBar from './menu/MenuBar'
+import MTable from './main/MTable'
 
 export default {
 
@@ -149,11 +156,62 @@ export default {
     return {
       tableData: Array(20).fill(item),
       isCollapse: false,
-      search_input: ''
+      search_input: '',
+
+      editableTabsValue: '2',
+      editableTabs: [{
+        title: 'Tab 1',
+        name: '1',
+        content: 'Tab 1 content',
+        closable: true
+      }, {
+        title: '表格',
+        name: '2',
+        content: 'MTable',
+        closable: true,
+      }],
+      tabIndex: 2
+    }
+  },
+  methods: {
+    handleClick(tab, event) {
+      console.log(tab, event);
+      if (tab.name === 'add') {
+        event.preventDefault()
+        this.addTab(this.editableTabsValue)
+      }
+    },
+    addTab(targetName) {
+      let newTabName = ++this.tabIndex + '';
+      this.editableTabs.push({
+        title: 'New Tab',
+        name: newTabName,
+        content: 'New Tab content',
+        closable: true
+      });
+      this.editableTabsValue = newTabName;
+    },
+    removeTab(targetName) {
+      let tabs = this.editableTabs;
+      let activeName = this.editableTabsValue;
+      if (activeName === targetName) {
+        tabs.forEach((tab, index) => {
+          if (tab.name === targetName) {
+            let nextTab = tabs[index + 1] || tabs[index - 1];
+            if (nextTab) {
+              activeName = nextTab.name;
+            }
+          }
+        });
+      }
+
+      this.editableTabsValue = activeName;
+      this.editableTabs = tabs.filter(tab => tab.name !== targetName);
     }
   },
   components: {
-    MenuBar
+    MenuBar,
+    MTable
   }
 };
 

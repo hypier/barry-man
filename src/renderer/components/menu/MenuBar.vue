@@ -45,7 +45,7 @@ export default {
 <style type="text/css">
 
 .el-menu-vertical:not(.el-menu--collapse) {
-  width: 200px;
+  width: 250px;
 }
 
 .el-menu--collapse .el-submenu__title span {
@@ -54,6 +54,11 @@ export default {
   overflow: hidden;
   visibility: hidden;
   display: inline-block;
+}
+
+.el-submenu .el-menu-item {
+  height: 30px !important;
+  line-height: 30px !important;
 }
 
 .el-menu--collapse .el-submenu__icon-arrow {
