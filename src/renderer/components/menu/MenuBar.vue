@@ -13,7 +13,8 @@ export default {
   data() {
     return {
       menuData: [],
-      menuInfo: {}
+      menuInfo: {},
+      itemData: new Map()
     }
   },
   created: function () {
@@ -21,7 +22,7 @@ export default {
   },
   methods: {
     handleSelect(key, keyPath) {
-      console.log(key, keyPath, event.target)
+      console.log(this.itemData.get(key))
     },
     handleOpen(key, keyPath) {
       event.target.parentElement.getElementsByClassName("el-icon-folder-add")[0]
@@ -39,17 +40,33 @@ export default {
 
       myCollection = new Collection(JSON.parse(fs.readFileSync(
           path.resolve(__dirname, '../../../docs/doc.postman_collection.json')).toString()));
-      let json = myCollection.toJSON()
-      console.log(json)
 
+      let json = myCollection.toJSON()
       this.menuData = json.item
       this.menuInfo = json.info
+      this.addData(json.item)
+
+    },
+    addData(items) {
+      for (let i = 0; i < items.length; i++) {
+        let obj = items[i]
+        if (obj.request) {
+          this.itemData.set(obj.id, obj)
+        }
+
+        if (obj.item) {
+          this.addData(obj.item)
+        }
+      }
+
     }
   },
   components: {
     MenuTree
   }
 }
+
+
 </script>
 <style type="text/css">
 

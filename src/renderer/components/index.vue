@@ -21,7 +21,7 @@
               </el-input>
 
             </div>
-            <div class="line"></div>
+            <div class="bottom-line"></div>
           </el-col>
         </el-row>
         <MenuBar :collapse="isCollapse"></MenuBar>
@@ -34,10 +34,9 @@
               :key="item.name"
               :label="item.title"
               :name="item.name"
-              :closable="item.closable"
-          >
+              :closable="item.closable">
             <component :is="item.content" v-if="item.content === 'MTable'"></component>
-            <div v-else>{{ item.content }}</div>
+            <api-table v-else></api-table>
           </el-tab-pane>
           <el-tab-pane key="add" name="add" :closable="false" label="+"></el-tab-pane>
         </el-tabs>
@@ -75,10 +74,9 @@ html, body, #app, .el-container {
 .el-aside {
   border-right: #e6e6e6 1px solid;
 }
-
-.line {
-  margin-top: 5px;
+.bottom-line {
   border-bottom: #e6e6e6 1px solid;
+  padding-bottom: 5px;
 }
 
 .el-header {
@@ -144,21 +142,17 @@ html, body, #app, .el-container {
 <script>
 import MenuBar from './menu/MenuBar'
 import MTable from './main/MTable'
+import ApiTable from "./main/ApiTable";
 
 export default {
 
   data() {
-    const item = {
-      date: '2016-05-02',
-      name: '王小虎',
-      address: '上海市普陀区金沙江路 1518 弄'
-    };
+
     return {
-      tableData: Array(20).fill(item),
       isCollapse: false,
       search_input: '',
 
-      editableTabsValue: '2',
+      editableTabsValue: '1',
       editableTabs: [{
         title: 'Tab 1',
         name: '1',
@@ -169,7 +163,8 @@ export default {
         name: '2',
         content: 'MTable',
         closable: true,
-      }],
+      }
+      ],
       tabIndex: 2
     }
   },
@@ -211,7 +206,8 @@ export default {
   },
   components: {
     MenuBar,
-    MTable
+    MTable,
+    ApiTable
   }
 };
 
