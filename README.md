@@ -1,6 +1,8 @@
 # barry-man
 
-> An electron-vue project
+> An electron-vue element-ui postman project
+## Screenshot
+![](src/docs/screenshot.png)
 
 #### Build Setup
 
