@@ -27,7 +27,7 @@
         <MenuBar :collapse="isCollapse"></MenuBar>
 
       </el-aside>
-      <el-main>
+      <el-main style="padding: 10px">
         <el-tabs v-model="editableTabsValue" type="card" @tab-remove="removeTab" @tab-click="handleClick">
           <el-tab-pane
               v-for="(item, index) in editableTabs"
