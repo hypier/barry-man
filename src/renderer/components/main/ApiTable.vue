@@ -136,24 +136,6 @@ export default {
       console.log(this.tableData[0].name)
       console.log(tab, event);
     },
-    loseFocus(index, row) {
-      debugger
-      this.tableSelected = {index: 0, label: ''}
-    },
-    clickInput(index, label, className) {
-      console.log(label, index, className)
-      this.tableSelected = {index: index, label: label}
-      //让input自动获取焦点
-      this.$nextTick(function () {
-        let editInputList = document.getElementsByClassName(className);
-        if (editInputList) {
-          editInputList[0].children[0].focus();
-        }
-      });
-    },
-    selected(index, label) {
-      return this.tableSelected.index === index && this.tableSelected.label === label;
-    }
   },
   components: {
     ApiCell
