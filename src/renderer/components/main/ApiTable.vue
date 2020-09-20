@@ -47,23 +47,33 @@
     <el-row>
       <el-col>
         <div class="title" style="margin-bottom: 5px">Query Params</div>
-        <el-table :data="tableData" border style="width: 100%">
-          <el-table-column label="日期" width="180">
-            <template scope="scope">
-              <el-icon name="time"></el-icon>
-              <span style="margin-left: 10px">{{ scope.row.date }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="姓名" width="180">
-            <template scope="scope">
-              <div @click.stop="changeNum(scope.row, 'editRemarkInput')">
-                <el-input v-model="scope.row.name" v-if="scope.row.seen"
-                          @blur="loseFocus(scope.$index, scope.row)" class="editRemarkInput"></el-input>
-                <span style="margin-left: 10px" v-else>{{ scope.row.name }}</span>
-              </div>
-            </template>
-          </el-table-column>
-
+        <el-table :data="tableData" border style="width: 100%"
+                  :header-cell-style="{padding:0, height: '35px', lineHeight:'35px'}"
+                  :row-style="{height:'32px'}"
+                  :cell-style="{padding:0, height: '35px', lineHeight:'35px'}">
+            <el-table-column width="40">
+              <template scope="scope">
+                <el-checkbox v-model="scope.row.seed"></el-checkbox>
+              </template>
+            </el-table-column>
+            <el-table-column label="姓名">
+              <template scope="scope">
+                <div @click.stop="clickInput(scope.$index, scope.column.label, 'edit-remark-input')">
+                  <el-input v-model="scope.row.name" v-if="selected(scope.$index, scope.column.label)"
+                            @blur="loseFocus(scope.$index, scope.row)" class="edit-remark-input"></el-input>
+                  <span style="margin-left: 10px" v-else>{{ scope.row.name }}</span>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column label="地址">
+              <template scope="scope">
+                <div @click.stop="clickInput(scope.$index, scope.column.label, 'edit-remark-input')">
+                  <el-input v-model="scope.row.address" v-if="selected(scope.$index, scope.column.label)"
+                            @blur="loseFocus(scope.$index, scope.row)" class="edit-remark-input"></el-input>
+                  <span style="margin-left: 10px" v-else>{{ scope.row.address }}</span>
+                </div>
+              </template>
+            </el-table-column>
         </el-table>
       </el-col>
     </el-row>
@@ -94,27 +104,37 @@ export default {
       value: 'GET',
       input: '',
       activeName: 'second',
+      tableSelected: {
+        index: 0,
+        label: ''
+      },
       tableData: [{
-        seen: false,
+        seed: true,
         date: '2016-05-02',
         name: '王小虎1',
         address: '上海市普陀区金沙江路 1518 弄'
       }, {
-        seen: false,
+        seed: true,
         date: '2016-05-04',
         name: '王小虎2',
         address: '上海市普陀区金沙江路 1517 弄'
       }, {
-        seen: false,
+        seed: true,
         date: '2016-05-01',
         name: '王小虎3',
         address: '上海市普陀区金沙江路 1519 弄'
       }, {
-        seen: false,
+        seed: true,
         date: '2016-05-03',
         name: '王小虎4',
         address: '上海市普陀区金沙江路 1516 弄'
-      }]
+      }, {
+        seed: false,
+        date: '1',
+        name: '',
+        address: ''
+      }
+      ]
     }
   },
   methods: {
@@ -125,12 +145,9 @@ export default {
       debugger
       row.seen = false;
     },
-    cellClick(row, column) {
-      debugger
-      row.seen = true;
-    },
-    changeNum(row, className) {
-      row.seen = true
+    clickInput(index, label, className) {
+      console.log(label, index, className)
+      this.tableSelected = {index: index, label: label}
       //让input自动获取焦点
       this.$nextTick(function () {
         let editInputList = document.getElementsByClassName(className);
@@ -138,7 +155,9 @@ export default {
           editInputList[0].children[0].focus();
         }
       });
-
+    },
+    selected(index, label) {
+      return this.tableSelected.index === index && this.tableSelected.label === label;
     },
   }
 }
@@ -151,17 +170,12 @@ export default {
   font-weight: bold;
 }
 
-.el-row {
-  margin-bottom: 10px;
+.edit-remark-input >>> .el-input__inner {
+  height: 30px;
+  line-height: 30px;
+  border: none;
+  border-radius: 0;
+  padding-left: 10px;
 }
 
-.el-col {
-  border-radius: 4px;
-}
-
-
-.row-bg {
-  padding: 10px 0;
-  background-color: #f9fafc;
-}
 </style>
