@@ -51,29 +51,21 @@
                   :header-cell-style="{padding:0, height: '35px', lineHeight:'35px'}"
                   :row-style="{height:'32px'}"
                   :cell-style="{padding:0, height: '35px', lineHeight:'35px'}">
-            <el-table-column width="40">
-              <template scope="scope">
-                <el-checkbox v-model="scope.row.seed"></el-checkbox>
-              </template>
-            </el-table-column>
-            <el-table-column label="姓名">
-              <template scope="scope">
-                <div @click.stop="clickInput(scope.$index, scope.column.label, 'edit-remark-input')">
-                  <el-input v-model="scope.row.name" v-if="selected(scope.$index, scope.column.label)"
-                            @blur="loseFocus(scope.$index, scope.row)" class="edit-remark-input"></el-input>
-                  <span style="margin-left: 10px" v-else>{{ scope.row.name }}</span>
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column label="地址">
-              <template scope="scope">
-                <div @click.stop="clickInput(scope.$index, scope.column.label, 'edit-remark-input')">
-                  <el-input v-model="scope.row.address" v-if="selected(scope.$index, scope.column.label)"
-                            @blur="loseFocus(scope.$index, scope.row)" class="edit-remark-input"></el-input>
-                  <span style="margin-left: 10px" v-else>{{ scope.row.address }}</span>
-                </div>
-              </template>
-            </el-table-column>
+          <el-table-column width="40">
+            <template scope="scope">
+              <el-checkbox v-model="scope.row.seed"></el-checkbox>
+            </template>
+          </el-table-column>
+          <el-table-column label="姓名">
+            <template scope="scope">
+              <ApiCell :cellValue="scope.row.name" @input="scope.row.name = $event"></ApiCell>
+            </template>
+          </el-table-column>
+          <el-table-column label="地址">
+            <template scope="scope">
+              <ApiCell :cellValue="scope.row.address" @input="scope.row.address = $event"></ApiCell>
+            </template>
+          </el-table-column>
         </el-table>
       </el-col>
     </el-row>
@@ -81,6 +73,8 @@
 
 </template>
 <script>
+import ApiCell from "./ApiCell";
+
 export default {
   name: "ApiTable",
   data() {
@@ -139,11 +133,12 @@ export default {
   },
   methods: {
     handleClick(tab, event) {
+      console.log(this.tableData[0].name)
       console.log(tab, event);
     },
     loseFocus(index, row) {
       debugger
-      row.seen = false;
+      this.tableSelected = {index: 0, label: ''}
     },
     clickInput(index, label, className) {
       console.log(label, index, className)
@@ -158,7 +153,10 @@ export default {
     },
     selected(index, label) {
       return this.tableSelected.index === index && this.tableSelected.label === label;
-    },
+    }
+  },
+  components: {
+    ApiCell
   }
 }
 </script>
@@ -170,12 +168,6 @@ export default {
   font-weight: bold;
 }
 
-.edit-remark-input >>> .el-input__inner {
-  height: 30px;
-  line-height: 30px;
-  border: none;
-  border-radius: 0;
-  padding-left: 10px;
-}
+
 
 </style>
