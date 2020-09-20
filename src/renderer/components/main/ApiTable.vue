@@ -47,8 +47,7 @@
     <el-row>
       <el-col>
         <div class="title" style="margin-bottom: 5px">Query Params</div>
-        <el-table :data="tableData" border style="width: 100%"
-                  :header-cell-style="{padding:0, height: '35px', lineHeight:'35px'}"
+        <el-table :data="tableData" border style="width: 100%" :show-header="false"
                   :row-style="{height:'32px'}"
                   :cell-style="{padding:0, height: '35px', lineHeight:'35px'}">
           <el-table-column width="40">
@@ -56,14 +55,19 @@
               <el-checkbox v-model="scope.row.seed"></el-checkbox>
             </template>
           </el-table-column>
-          <el-table-column label="姓名">
+          <el-table-column label="时间">
             <template scope="scope">
-              <ApiCell v-model="scope.row.name"></ApiCell>
+              <ApiCell v-model="scope.row.date" :scope="scope" @change="cellInput"></ApiCell>
             </template>
           </el-table-column>
-          <el-table-column label="地址">
+          <el-table-column label="参数名">
             <template scope="scope">
-              <ApiCell v-model="scope.row.address"></ApiCell>
+              <ApiCell v-model="scope.row.name" :scope="scope"></ApiCell>
+            </template>
+          </el-table-column>
+          <el-table-column label="参数值">
+            <template scope="scope">
+              <ApiCell v-model="scope.row.address" :scope="scope"></ApiCell>
             </template>
           </el-table-column>
         </el-table>
@@ -122,24 +126,37 @@ export default {
         date: '2016-05-03',
         name: '王小虎4',
         address: '上海市普陀区金沙江路 1516 弄'
-      }, {
-        seed: false,
-        date: '1',
-        name: '',
-        address: ''
-      }
-      ]
+      }]
     }
+  },
+  created() {
+    this.handleAdd()
   },
   methods: {
     handleClick(tab, event) {
       console.log(this.tableData[0].name)
       console.log(tab, event);
     },
+    handleAdd() {
+      this.tableData.push({isNew: true})
+    },
+    cellInput(val, scope){
+      this.tableData[scope.$index].isNew = !!this.isNew(scope.row);
+    },
+    isNew(row){
+      return this.isEmpty(row.date) && this.isEmpty(row.name) && this.isEmpty(row.address);
+    },
+    isEmpty(obj){
+      if (obj === undefined){
+        return true
+      }
+
+      return obj.length <= 0;
+    }
   },
   components: {
     ApiCell
-  }
+  },
 }
 </script>
 

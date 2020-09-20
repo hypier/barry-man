@@ -1,9 +1,12 @@
 <template>
-  <div @click.stop="clickInput('edit-remark-input')">
+  <div @click.stop="clickInput('edit-remark-input')"
+       style="width: 100%;line-height: 35px;height: 35px">
     <el-input v-model="cValue" v-if="this.tableSelected"
               @blur="loseFocus" class="edit-remark-input"
-              @input="$emit('input', cValue)"></el-input>
-    <span style="margin-left: 10px" v-else>{{ cValue }}</span>
+              @input="$emit('input', cValue)"
+              @change="$emit('change', cValue, scope)" clearable></el-input>
+    <span v-else-if="scope.row.isNew" style="color: #909399">{{ scope.column.label }}</span>
+    <span v-else style="color: #303133">{{ cValue }}</span>
   </div>
 </template>
 
@@ -13,6 +16,9 @@ export default {
   props: {
     value: {
       type: String
+    },
+    scope: {
+      type: Object
     }
   },
   data() {
@@ -46,6 +52,7 @@ export default {
   line-height: 30px;
   border: none;
   border-radius: 0;
-  padding-left: 10px;
+  padding-left: 0;
+  color: #303133;
 }
 </style>
