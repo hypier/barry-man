@@ -10,11 +10,15 @@
 <script>
 export default {
   name: "ApiCell",
-  props: ['cellValue'],
+  props: {
+    value: {
+      type: String
+    }
+  },
   data() {
     return {
       tableSelected: false,
-      cValue: this.cellValue
+      cValue: this.value
     }
   },
   methods: {

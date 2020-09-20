@@ -58,12 +58,12 @@
           </el-table-column>
           <el-table-column label="姓名">
             <template scope="scope">
-              <ApiCell :cellValue="scope.row.name" @input="scope.row.name = $event"></ApiCell>
+              <ApiCell v-model="scope.row.name"></ApiCell>
             </template>
           </el-table-column>
           <el-table-column label="地址">
             <template scope="scope">
-              <ApiCell :cellValue="scope.row.address" @input="scope.row.address = $event"></ApiCell>
+              <ApiCell v-model="scope.row.address"></ApiCell>
             </template>
           </el-table-column>
         </el-table>
@@ -149,7 +149,5 @@ export default {
   font-size: 13px;
   font-weight: bold;
 }
-
-
 
 </style>
