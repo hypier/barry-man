@@ -51,22 +51,22 @@
                   :row-style="{height:'32px'}"
                   :cell-style="{padding:0, height: '35px', lineHeight:'35px'}">
           <el-table-column width="40">
-            <template scope="scope">
+            <template slot-scope="scope">
               <el-checkbox v-model="scope.row.seed"></el-checkbox>
             </template>
           </el-table-column>
           <el-table-column label="时间">
-            <template scope="scope">
+            <template slot-scope="scope">
               <ApiCell v-model="scope.row.date" :scope="scope" @change="cellInput"></ApiCell>
             </template>
           </el-table-column>
           <el-table-column label="参数名">
-            <template scope="scope">
+            <template slot-scope="scope">
               <ApiCell v-model="scope.row.name" :scope="scope"></ApiCell>
             </template>
           </el-table-column>
           <el-table-column label="参数值">
-            <template scope="scope">
+            <template slot-scope="scope">
               <ApiCell v-model="scope.row.address" :scope="scope"></ApiCell>
             </template>
           </el-table-column>
