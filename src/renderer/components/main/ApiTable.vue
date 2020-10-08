@@ -7,16 +7,16 @@
     </el-row>
     <el-row type="flex" justify="start">
       <el-col :span="24">
-        <el-input placeholder="请输入请求URL" v-model="input">
+        <el-input placeholder="请输入请求URL" v-model="this.requestData.url.raw">
           <div slot="prepend">
             <div class="centerClass">
-              <el-select v-model="value" style="width: 100px">
-                <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                </el-option>
+              <el-select v-model="this.requestData.method" style="width: 100px">
+                <el-option label="GET" value="GET" />
+                <el-option label="POST" value="POST" />
+                <el-option label="PUT" value="PUT" />
+                <el-option label="POST" value="POST" />
+                <el-option label="PATCH" value="PATCH" />
+                <el-option label="DELETE" value="DELETE" />
               </el-select>
             </div>
             <div class="centerClass">
@@ -81,56 +81,37 @@ import ApiCell from "./ApiCell";
 
 export default {
   name: "ApiTable",
+  props: {
+    value: {type: Object}
+  },
   data() {
     return {
-      options: [{
-        value: 'GET',
-        label: 'GET'
-      }, {
-        value: 'POST',
-        label: 'POST'
-      }, {
-        value: 'PUT',
-        label: 'PUT'
-      }, {
-        value: 'PATCH',
-        label: 'PATCH'
-      }, {
-        value: 'DELETE',
-        label: 'DELETE'
-      }],
-      value: 'GET',
-      input: '',
+      requestData: this.value,
+
       activeName: 'second',
       tableSelected: {
         index: 0,
         label: ''
       },
-      tableData: [{
-        seed: true,
-        date: '2016-05-02',
-        name: '王小虎1',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        seed: true,
-        date: '2016-05-04',
-        name: '王小虎2',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        seed: true,
-        date: '2016-05-01',
-        name: '王小虎3',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        seed: true,
-        date: '2016-05-03',
-        name: '王小虎4',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }]
+      tableData: []
     }
   },
   created() {
     this.handleAdd()
+    if (this.requestData === undefined){
+      this.requestData = {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/users",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users"
+          ]
+        }
+      }
+    }
   },
   methods: {
     handleClick(tab, event) {

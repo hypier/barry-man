@@ -24,23 +24,11 @@
             <div class="bottom-line"></div>
           </el-col>
         </el-row>
-        <MenuBar :collapse="isCollapse"></MenuBar>
+        <MenuBar :collapse="isCollapse" :menuData="this.requestData" @select="handleSelect"></MenuBar>
 
       </el-aside>
       <el-main style="padding: 10px">
-        <el-tabs v-model="editableTabsValue" type="card" @tab-remove="removeTab" @tab-click="handleClick">
-          <el-tab-pane
-              v-for="(item, index) in editableTabs"
-              :key="item.name"
-              :label="item.title"
-              :name="item.name"
-              :closable="item.closable">
-            <component :is="item.content" v-if="item.content === 'MTable'"></component>
-            <api-table v-else></api-table>
-          </el-tab-pane>
-          <el-tab-pane key="add" name="add" :closable="false" label="+"></el-tab-pane>
-        </el-tabs>
-
+        <ApiTabs v-model="tabsData"></ApiTabs>
       </el-main>
 
     </el-container>
@@ -74,6 +62,7 @@ html, body, #app, .el-container {
 .el-aside {
   border-right: #e6e6e6 1px solid;
 }
+
 .bottom-line {
   border-bottom: #e6e6e6 1px solid;
   padding-bottom: 5px;
@@ -141,8 +130,7 @@ html, body, #app, .el-container {
 
 <script>
 import MenuBar from './menu/MenuBar'
-import MTable from './main/MTable'
-import ApiTable from "./main/ApiTable";
+import ApiTabs from "./main/ApiTabs";
 
 export default {
 
@@ -151,63 +139,51 @@ export default {
     return {
       isCollapse: false,
       search_input: '',
-
-      editableTabsValue: '1',
-      editableTabs: [{
-        title: 'Tab 1',
-        name: '1',
-        content: 'Tab 1 content',
-        closable: true
-      }, {
-        title: '表格',
-        name: '2',
-        content: 'MTable',
-        closable: true,
-      }
-      ],
-      tabIndex: 2
+      requestData: [],
+      tabsData: [],
     }
   },
+  created: function () {
+    this.getData()
+  },
   methods: {
-    handleClick(tab, event) {
-      console.log(tab, event);
-      if (tab.name === 'add') {
-        event.preventDefault()
-        this.addTab(this.editableTabsValue)
-      }
-    },
-    addTab(targetName) {
-      let newTabName = ++this.tabIndex + '';
-      this.editableTabs.push({
-        title: 'New Tab',
-        name: newTabName,
-        content: 'New Tab content',
-        closable: true
-      });
-      this.editableTabsValue = newTabName;
-    },
-    removeTab(targetName) {
-      let tabs = this.editableTabs;
-      let activeName = this.editableTabsValue;
-      if (activeName === targetName) {
-        tabs.forEach((tab, index) => {
-          if (tab.name === targetName) {
-            let nextTab = tabs[index + 1] || tabs[index - 1];
-            if (nextTab) {
-              activeName = nextTab.name;
-            }
-          }
-        });
-      }
+    getData: function () {
+      let fs = require('fs'),
+          Collection = require('postman-collection').Collection,
+          path = require('path'),
+          myCollection;
 
-      this.editableTabsValue = activeName;
-      this.editableTabs = tabs.filter(tab => tab.name !== targetName);
+      myCollection = new Collection(JSON.parse(fs.readFileSync(
+          path.resolve(__dirname, '../../docs/doc.postman_collection.json')).toString()));
+
+      let json = myCollection.toJSON()
+
+      this.requestData.push({
+        items: json.item,
+        info: json.info
+      })
+
+      //this.addData(json.item)
+    },
+    addData(items) {
+      for (let i = 0; i < items.length; i++) {
+        let obj = items[i]
+        if (obj.request) {
+          this.tabsData.push(obj)
+        }
+
+        if (obj.item) {
+          this.addData(obj.item)
+        }
+      }
+    },
+    handleSelect: function (key, keyPath) {
+      console.log(key, keyPath)
     }
   },
   components: {
-    MenuBar,
-    MTable,
-    ApiTable
+    ApiTabs,
+    MenuBar
   }
 };
 

@@ -1,7 +1,10 @@
 <template>
-  <el-menu class="el-menu-vertical" @open="handleOpen" @close="handleClose" @select="handleSelect"
+  <el-menu class="el-menu-vertical" @open="handleOpen" @close="handleClose"
+           @select="handleSelect"
            :collapse="this.collapse" style="border-right: none;">
-    <MenuTree :menuData="this.menuData" :menuInfo="this.menuInfo"></MenuTree>
+    <template v-for="item in this.menuData">
+      <MenuTree :menuData="item.items" :menuInfo="item.info"></MenuTree>
+    </template>
   </el-menu>
 </template>
 
@@ -9,20 +12,11 @@
 import MenuTree from './MenuTree'
 
 export default {
-  props: ['collapse'],
-  data() {
-    return {
-      menuData: [],
-      menuInfo: {},
-      itemData: new Map()
-    }
-  },
-  created: function () {
-    this.getMenu()
-  },
+  props: ['collapse', 'menuData'],
+
   methods: {
     handleSelect(key, keyPath) {
-      console.log(this.itemData.get(key))
+      this.$emit('select', key, keyPath)
     },
     handleOpen(key, keyPath) {
       event.target.parentElement.getElementsByClassName("el-icon-folder-add")[0]
@@ -32,34 +26,7 @@ export default {
       event.target.parentElement.getElementsByClassName("el-icon-folder-opened")[0]
           .setAttribute("class", "el-icon-folder-add")
     },
-    getMenu: function () {
-      let fs = require('fs'),
-          Collection = require('postman-collection').Collection,
-          path = require('path'),
-          myCollection;
 
-      myCollection = new Collection(JSON.parse(fs.readFileSync(
-          path.resolve(__dirname, '../../../docs/doc.postman_collection.json')).toString()));
-
-      let json = myCollection.toJSON()
-      this.menuData = json.item
-      this.menuInfo = json.info
-      this.addData(json.item)
-
-    },
-    addData(items) {
-      for (let i = 0; i < items.length; i++) {
-        let obj = items[i]
-        if (obj.request) {
-          this.itemData.set(obj.id, obj)
-        }
-
-        if (obj.item) {
-          this.addData(obj.item)
-        }
-      }
-
-    }
   },
   components: {
     MenuTree
